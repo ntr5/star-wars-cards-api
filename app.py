@@ -23,9 +23,10 @@ db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
 class Card(db.Model):
-    _tablename__ = "cards"
+    __tablename__ = "cards"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
+    # quantity = db.Column(db.Integer)
     # price = db.Column(db.Numeric(10, 2))
     # offer = db.Column(db.Numeric(10, 2))
     price = db.Column(db.String(20))
