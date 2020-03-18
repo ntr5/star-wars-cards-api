@@ -5,9 +5,9 @@ from flask_cors import CORS
 from flask_heroku import Heroku
 from environs import Env
 import os
+# import psycopg2
 
 app = Flask(__name__)
-CORS(app)
 heroku = Heroku(app)
 env = Env()
 env.read_env()
@@ -15,9 +15,17 @@ env.read_env()
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(basedir, "app.sqlite")
-# app.config['SQLALCHEMY_DATABASE_URI'] - DATABASE_URL
 
-# CORS(app)
+
+# app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+# conn = psycopg2.connect("dbname=postgres user=deployer")
+
+# app.config['SQLALCHEMY_DATABASE_URI'] - MONGO_URL
+# MONGO_URL = os.environ.get('MONGO_URL')
+# if not MONGO_URL:
+#     MONGO_URL = "mongodb://heroku_kmg4vfxb:t4db3q35fvk5uhmm5rjjetudt7@ds033145.mlab.com:33145/heroku_kmg4vfxb";
+
+CORS(app)
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
@@ -25,24 +33,28 @@ ma = Marshmallow(app)
 class Card(db.Model):
     __tablename__ = "cards"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
-    # quantity = db.Column(db.Integer)
-    # price = db.Column(db.Numeric(10, 2))
-    # offer = db.Column(db.Numeric(10, 2))
-    price = db.Column(db.String(20))
-    offer = db.Column(db.String(20))
+    name = db.Column(db.String(100), nullable=False)
+    # name = db.Column(db.String(50))
+    quantity = db.Column(db.Integer)
+    price = db.Column(db.Numeric(10, 2), nullable=False)
+    offer = db.Column(db.Numeric(10, 2))
+    # price = db.Column(db.String(20))
+    # offer = db.Column(db.String(20))
     image_url = db.Column(db.String(500))
+    seller_id = db.Column(db.Integer)
 
-    def __init__(self, name, price, offer, image_url):
+    def __init__(self, name, quantity, price, offer, image_url, seller_id):
         self.name = name
+        self.quantity = quantity
         self.price = price
         self.offer = offer
         self.image_url = image_url
+        self.seller_id = seller_id
 
 
 class CardSchema(ma.Schema):
     class Meta:
-        fields = ("id", "name", "price", "offer", "image_url")
+        fields = ("id", "name", "quantity", "price", "offer", "image_url", "seller_id")
 
 
 card_schema = CardSchema()
@@ -55,14 +67,17 @@ def greeting():
 
 
 #POST
+# @app.route("/post-card", methods=["POST"])
 @app.route("/add-card", methods=["POST"])
 def add_card():
     name = request.json["name"]
+    quantity = request.json["quantity"]
     price = request.json["price"]
     offer = request.json["offer"]
     image_url = request.json["image_url"]
+    seller_id = request.json["seller_id"]
 
-    new_card = Card(name, price, offer, image_url)
+    new_card = Card(name, quantity, price, offer, image_url, seller_id)
 
     db.session.add(new_card)
     db.session.commit()
@@ -92,14 +107,18 @@ def get_card(id):
 def update_card(id):
     card = Card.query.get(id)
     name = request.json['name']
+    quantity = request.json['quantity']
     price = request.json['price']
     offer = request.json['offer']
     image_url = request.json['image_url']
+    seller_id = request.json['seller_id']
 
     card.name = name
+    card.quantity = quantity
     card.price = price
     card.offer = offer
     card.image_url = image_url
+    card.seller_id = seller_id
 
     db.session.commit()
     return card_schema.jsonify(card)

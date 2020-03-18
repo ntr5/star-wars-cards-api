@@ -15,6 +15,7 @@ gunicorn = "*"
 marshmallow-sqlalchemy = "*"
 psycopg2-binary = "*"
 environs = "*"
+simplejson = "*"
 
 [requires]
 python_version = "3.8"
