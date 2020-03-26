@@ -4,28 +4,27 @@ from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 from flask_heroku import Heroku
 from environs import Env
+
 import os
-# import psycopg2
 
 app = Flask(__name__)
 heroku = Heroku(app)
 env = Env()
 env.read_env()
-# DATABASE_URL = env('DATABASE_URL')
+CORS(app)
+DATABASE_URL = env('DATABASE_URL')
+# DATABASE_URL = env('MONGO_URL')
+# cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(basedir, "app.sqlite")
+app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
+# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(basedir, "app.sqlite")
 
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
-# conn = psycopg2.connect("dbname=postgres user=deployer")
-
-# app.config['SQLALCHEMY_DATABASE_URI'] - MONGO_URL
 # MONGO_URL = os.environ.get('MONGO_URL')
 # if not MONGO_URL:
-#     MONGO_URL = "mongodb://heroku_kmg4vfxb:t4db3q35fvk5uhmm5rjjetudt7@ds033145.mlab.com:33145/heroku_kmg4vfxb";
 
-CORS(app)
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
@@ -37,6 +36,7 @@ class Card(db.Model):
     quantity = db.Column(db.Integer)
     price = db.Column(db.Numeric(10, 2), nullable=False)
     offer = db.Column(db.Numeric(10, 2))
+    # description = db.Column(db.text)
     image_url = db.Column(db.String(500))
     seller_id = db.Column(db.Integer)
 
