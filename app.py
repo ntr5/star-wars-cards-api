@@ -13,21 +13,16 @@ env = Env()
 env.read_env()
 CORS(app)
 DATABASE_URL = env('DATABASE_URL')
-# DATABASE_URL = env('MONGO_URL')
-# cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 # app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(basedir, "app.sqlite")
 
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
-# MONGO_URL = os.environ.get('MONGO_URL')
-# if not MONGO_URL:
-
-
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
+
 
 class Card(db.Model):
     __tablename__ = "cards"
