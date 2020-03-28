@@ -31,10 +31,10 @@ class Card(db.Model):
     quantity = db.Column(db.Integer)
     price = db.Column(db.Numeric(10, 2), nullable=False)
     offer = db.Column(db.Numeric(10, 2))
-    description = db.Column(db.String(4000))
+    description = db.Column(db.String(1500))
     image_url = db.Column(db.String(500))
+    username = db.Column(db.String(100), nullable=True)
     # seller_id = db.Column(db.Integer)
-    username = db.Column(db.String(100))
 
     # def __init__(self, name, quantity, price, offer, image_url, seller_id):
     def __init__(self, name, quantity, price, offer, description, image_url, username):
@@ -72,8 +72,8 @@ def add_card():
     offer = request.json["offer"]
     description = request.json["description"]
     image_url = request.json["image_url"]
-    # seller_id = request.json["seller_id"]
     username = request.json["username"]
+    # seller_id = request.json["seller_id"]
 
     # new_card = Card(name, quantity, price, offer, image_url, seller_id)
     new_card = Card(name, quantity, price, offer, description, image_url, username)
@@ -111,8 +111,8 @@ def update_card(id):
     offer = request.json['offer']
     description = request.json['description']
     image_url = request.json['image_url']
-    # seller_id = request.json['seller_id']
     username = request.json['username']
+    # seller_id = request.json['seller_id']
 
     card.name = name
     card.quantity = quantity
@@ -120,8 +120,8 @@ def update_card(id):
     card.offer = offer
     card.description = description
     card.image_url = image_url
-    # card.seller_id = seller_id
     card.description = description
+    # card.seller_id = seller_id
 
     db.session.commit()
     return card_schema.jsonify(card)
