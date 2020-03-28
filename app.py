@@ -30,18 +30,19 @@ class Card(db.Model):
     name = db.Column(db.String(100), nullable=False)
     quantity = db.Column(db.Integer)
     price = db.Column(db.Numeric(10, 2), nullable=False)
-    offer = db.Column(db.Numeric(10, 2))
+    # offer = db.Column(db.Numeric(10, 2))
     description = db.Column(db.String(1500))
     image_url = db.Column(db.String(500))
     username = db.Column(db.String(100), nullable=True)
     # seller_id = db.Column(db.Integer)
 
     # def __init__(self, name, quantity, price, offer, image_url, seller_id):
-    def __init__(self, name, quantity, price, offer, description, image_url, username):
+    # def __init__(self, name, quantity, price, offer, description, image_url, username):
+    def __init__(self, name, quantity, price, description, image_url, username):
         self.name = name
         self.quantity = quantity
         self.price = price
-        self.offer = offer
+        # self.offer = offer
         self.description = description
         self.image_url = image_url
         # self.seller_id = seller_id
@@ -51,7 +52,8 @@ class Card(db.Model):
 class CardSchema(ma.Schema):
     class Meta:
         # fields = ("id", "name", "quantity", "price", "offer", "image_url", "seller_id")
-        fields = ("id", "name", "quantity", "price", "offer", "description", "image_url", "username")
+        # fields = ("id", "name", "quantity", "price", "offer", "description", "image_url", "username")
+        fields = ("id", "name", "quantity", "price", "description", "image_url", "username")
 
 
 card_schema = CardSchema()
@@ -102,7 +104,7 @@ def get_card(id):
     return card_schema.jsonify(card)
 
 
-#PUT
+#PUT update a card
 @app.route("/card/<id>", methods=["PUT"])
 def update_card(id):
     card = Card.query.get(id)
@@ -113,7 +115,6 @@ def update_card(id):
     description = request.json['description']
     image_url = request.json['image_url']
     username = request.json['username']
-    # seller_id = request.json['seller_id']
 
     card.name = name
     card.quantity = quantity
@@ -122,7 +123,6 @@ def update_card(id):
     card.description = description
     card.image_url = image_url
     card.username = username
-    # card.seller_id = seller_id
 
     db.session.commit()
     return card_schema.jsonify(card)
