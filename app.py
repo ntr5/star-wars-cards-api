@@ -31,22 +31,27 @@ class Card(db.Model):
     quantity = db.Column(db.Integer)
     price = db.Column(db.Numeric(10, 2), nullable=False)
     offer = db.Column(db.Numeric(10, 2))
-    # description = db.Column(db.text)
+    description = db.Column(db.String(4000))
     image_url = db.Column(db.String(500))
-    seller_id = db.Column(db.Integer)
+    # seller_id = db.Column(db.Integer)
+    username = db.Column(db.String(100))
 
-    def __init__(self, name, quantity, price, offer, image_url, seller_id):
+    # def __init__(self, name, quantity, price, offer, image_url, seller_id):
+    def __init__(self, name, quantity, price, offer, description, image_url, username):
         self.name = name
         self.quantity = quantity
         self.price = price
         self.offer = offer
+        self.description = description
         self.image_url = image_url
-        self.seller_id = seller_id
+        # self.seller_id = seller_id
+        self.username = username
 
 
 class CardSchema(ma.Schema):
     class Meta:
-        fields = ("id", "name", "quantity", "price", "offer", "image_url", "seller_id")
+        # fields = ("id", "name", "quantity", "price", "offer", "image_url", "seller_id")
+        fields = ("id", "name", "quantity", "price", "offer", "description", "image_url", "username")
 
 
 card_schema = CardSchema()
@@ -59,17 +64,19 @@ def greeting():
 
 
 #POST
-# @app.route("/post-card", methods=["POST"])
 @app.route("/add-card", methods=["POST"])
 def add_card():
     name = request.json["name"]
     quantity = request.json["quantity"]
     price = request.json["price"]
     offer = request.json["offer"]
+    description = request.json["description"]
     image_url = request.json["image_url"]
-    seller_id = request.json["seller_id"]
+    # seller_id = request.json["seller_id"]
+    username = request.json["username"]
 
-    new_card = Card(name, quantity, price, offer, image_url, seller_id)
+    # new_card = Card(name, quantity, price, offer, image_url, seller_id)
+    new_card = Card(name, quantity, price, offer, description, image_url, username)
 
     db.session.add(new_card)
     db.session.commit()
@@ -102,15 +109,19 @@ def update_card(id):
     quantity = request.json['quantity']
     price = request.json['price']
     offer = request.json['offer']
+    description = request.json['description']
     image_url = request.json['image_url']
-    seller_id = request.json['seller_id']
+    # seller_id = request.json['seller_id']
+    username = request.json['username']
 
     card.name = name
     card.quantity = quantity
     card.price = price
     card.offer = offer
+    card.description = description
     card.image_url = image_url
-    card.seller_id = seller_id
+    # card.seller_id = seller_id
+    card.description = description
 
     db.session.commit()
     return card_schema.jsonify(card)
