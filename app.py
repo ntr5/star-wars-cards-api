@@ -69,14 +69,15 @@ def add_card():
     name = request.json["name"]
     quantity = request.json["quantity"]
     price = request.json["price"]
-    offer = request.json["offer"]
+    # offer = request.json["offer"]
     description = request.json["description"]
     image_url = request.json["image_url"]
     username = request.json["username"]
     # seller_id = request.json["seller_id"]
 
     # new_card = Card(name, quantity, price, offer, image_url, seller_id)
-    new_card = Card(name, quantity, price, offer, description, image_url, username)
+    # new_card = Card(name, quantity, price, offer, description, image_url, username)
+    new_card = Card(name, quantity, price, description, image_url, username)
 
     db.session.add(new_card)
     db.session.commit()
@@ -108,7 +109,7 @@ def update_card(id):
     name = request.json['name']
     quantity = request.json['quantity']
     price = request.json['price']
-    offer = request.json['offer']
+    # offer = request.json['offer']
     description = request.json['description']
     image_url = request.json['image_url']
     username = request.json['username']
@@ -117,10 +118,10 @@ def update_card(id):
     card.name = name
     card.quantity = quantity
     card.price = price
-    card.offer = offer
+    # card.offer = offer
     card.description = description
     card.image_url = image_url
-    card.description = description
+    card.username = username
     # card.seller_id = seller_id
 
     db.session.commit()
