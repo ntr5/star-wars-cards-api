@@ -30,30 +30,31 @@ class Card(db.Model):
     name = db.Column(db.String(100), nullable=False)
     quantity = db.Column(db.Integer)
     price = db.Column(db.Numeric(10, 2), nullable=False)
-    # offer = db.Column(db.Numeric(10, 2))
     description = db.Column(db.String(1500))
     image_url = db.Column(db.String(500))
-    username = db.Column(db.String(100), nullable=True)
+    # offer = db.Column(db.Numeric(10, 2))
+    # username = db.Column(db.String(100), nullable=True)
     # seller_id = db.Column(db.Integer)
 
     # def __init__(self, name, quantity, price, offer, image_url, seller_id):
     # def __init__(self, name, quantity, price, offer, description, image_url, username):
-    def __init__(self, name, quantity, price, description, image_url, username):
+    def __init__(self, name, quantity, price, description, image_url):
         self.name = name
         self.quantity = quantity
         self.price = price
-        # self.offer = offer
         self.description = description
         self.image_url = image_url
+        # self.offer = offer
         # self.seller_id = seller_id
-        self.username = username
+        # self.username = username
 
 
 class CardSchema(ma.Schema):
     class Meta:
         # fields = ("id", "name", "quantity", "price", "offer", "image_url", "seller_id")
         # fields = ("id", "name", "quantity", "price", "offer", "description", "image_url", "username")
-        fields = ("id", "name", "quantity", "price", "description", "image_url", "username")
+        # fields = ("id", "name", "quantity", "price", "description", "image_url", "username")
+        fields = ("id", "name", "quantity", "price", "description", "image_url")
 
 
 card_schema = CardSchema()
@@ -71,15 +72,16 @@ def add_card():
     name = request.json["name"]
     quantity = request.json["quantity"]
     price = request.json["price"]
-    # offer = request.json["offer"]
     description = request.json["description"]
     image_url = request.json["image_url"]
-    username = request.json["username"]
-    # seller_id = request.json["seller_id"]
+    # offer = request.json["offer"]
+    # username = request.json["username"]
+    # user_id = request.json["user_id"]
 
-    # new_card = Card(name, quantity, price, offer, image_url, seller_id)
+    # new_card = Card(name, quantity, price, offer, image_url, user_id)
     # new_card = Card(name, quantity, price, offer, description, image_url, username)
-    new_card = Card(name, quantity, price, description, image_url, username)
+    # new_card = Card(name, quantity, price, description, image_url, username)
+    new_card = Card(name, quantity, price, description, image_url)
 
     db.session.add(new_card)
     db.session.commit()
@@ -108,21 +110,23 @@ def get_card(id):
 @app.route("/card/<id>", methods=["PUT"])
 def update_card(id):
     card = Card.query.get(id)
+
     name = request.json['name']
     quantity = request.json['quantity']
     price = request.json['price']
-    # offer = request.json['offer']
     description = request.json['description']
     image_url = request.json['image_url']
-    username = request.json['username']
+    # offer = request.json['offer']
+    # username = request.json['username']
+    # user_id = request.json['user_id']
 
     card.name = name
     card.quantity = quantity
     card.price = price
-    # card.offer = offer
     card.description = description
     card.image_url = image_url
-    card.username = username
+    # card.offer = offer
+    # card.username = username
 
     db.session.commit()
     return card_schema.jsonify(card)
