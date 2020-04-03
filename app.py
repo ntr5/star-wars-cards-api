@@ -16,7 +16,8 @@ CORS(app)
 DATABASE_URL = env('DATABASE_URL')
 
 Cloud.config.update = ({
-    'cloud_name':os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    # 'cloud_name':os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'cloud_name':"dtksvhogu",
     'api_key': os.environ.get('CLOUDINARY_API_KEY'),
     'api_secret': os.environ.get('CLOUDINARY_API_SECRET')
 })
