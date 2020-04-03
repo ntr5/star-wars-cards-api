@@ -4,6 +4,7 @@ from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 from flask_heroku import Heroku
 from environs import Env
+import cloudinary as Cloud
 
 import os
 
@@ -14,6 +15,11 @@ env.read_env()
 CORS(app)
 DATABASE_URL = env('DATABASE_URL')
 
+Cloud.config.update = ({
+    'cloud_name':os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'api_key': os.environ.get('CLOUDINARY_API_KEY'),
+    'api_secret': os.environ.get('CLOUDINARY_API_SECRET')
+})
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
@@ -32,18 +38,20 @@ class Card(db.Model):
     price = db.Column(db.Numeric(10, 2), nullable=False)
     description = db.Column(db.String(1500))
     image_url = db.Column(db.String(500))
+    public_id = db.Column(db.String(500))
     # offer = db.Column(db.Numeric(10, 2))
     # username = db.Column(db.String(100), nullable=True)
     # seller_id = db.Column(db.Integer)
 
     # def __init__(self, name, quantity, price, offer, image_url, seller_id):
     # def __init__(self, name, quantity, price, offer, description, image_url, username):
-    def __init__(self, name, quantity, price, description, image_url):
+    def __init__(self, name, quantity, price, description, image_url, public_id):
         self.name = name
         self.quantity = quantity
         self.price = price
         self.description = description
         self.image_url = image_url
+        self.public_id = public_id
         # self.offer = offer
         # self.seller_id = seller_id
         # self.username = username
@@ -54,7 +62,7 @@ class CardSchema(ma.Schema):
         # fields = ("id", "name", "quantity", "price", "offer", "image_url", "seller_id")
         # fields = ("id", "name", "quantity", "price", "offer", "description", "image_url", "username")
         # fields = ("id", "name", "quantity", "price", "description", "image_url", "username")
-        fields = ("id", "name", "quantity", "price", "description", "image_url")
+        fields = ("id", "name", "quantity", "price", "description", "image_url", "public_id")
 
 
 card_schema = CardSchema()
@@ -74,6 +82,7 @@ def add_card():
     price = request.json["price"]
     description = request.json["description"]
     image_url = request.json["image_url"]
+    public_id = request.json["public_id"]
     # offer = request.json["offer"]
     # username = request.json["username"]
     # user_id = request.json["user_id"]
@@ -81,7 +90,7 @@ def add_card():
     # new_card = Card(name, quantity, price, offer, image_url, user_id)
     # new_card = Card(name, quantity, price, offer, description, image_url, username)
     # new_card = Card(name, quantity, price, description, image_url, username)
-    new_card = Card(name, quantity, price, description, image_url)
+    new_card = Card(name, quantity, price, description, image_url, public_id)
 
     db.session.add(new_card)
     db.session.commit()
@@ -116,6 +125,7 @@ def update_card(id):
     price = request.json['price']
     description = request.json['description']
     image_url = request.json['image_url']
+    public_id = request.json['public_id']
     # offer = request.json['offer']
     # username = request.json['username']
     # user_id = request.json['user_id']
@@ -125,6 +135,7 @@ def update_card(id):
     card.price = price
     card.description = description
     card.image_url = image_url
+    card.public_id = public_id
     # card.offer = offer
     # card.username = username
 
@@ -139,6 +150,7 @@ def delete_card(id):
 
     db.session.delete(card)
     db.session.commit()
+    Cloud.api.delete_resources([card.public_id])
 
     return "CARD WAS SUCCESSFULLY DELETED"
 

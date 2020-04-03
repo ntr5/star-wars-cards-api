@@ -16,6 +16,8 @@ marshmallow-sqlalchemy = "*"
 psycopg2-binary = "*"
 environs = "*"
 simplejson = "*"
+cloudinary = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.8"
