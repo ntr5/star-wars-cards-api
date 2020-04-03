@@ -15,12 +15,20 @@ env.read_env()
 CORS(app)
 DATABASE_URL = env('DATABASE_URL')
 
-Cloud.config.update = ({
-    # 'cloud_name':os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    'cloud_name':"dtksvhogu",
-    'api_key': os.environ.get('CLOUDINARY_API_KEY'),
-    'api_secret': os.environ.get('CLOUDINARY_API_SECRET')
-})
+# Cloud.config.update = ({
+#     # 'cloud_name':os.environ.get('CLOUDINARY_CLOUD_NAME'),
+#     'cloud_name':"dtksvhogu",
+#     'api_key': os.environ.get('CLOUDINARY_API_KEY'),
+#     'api_secret': os.environ.get('CLOUDINARY_API_SECRET'), 
+#     secure: true
+# })
+
+Cloud.config(
+    cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    # cloud_name = "dtksvhogu",
+    api_key = os.environ.get('CLOUDINARY_API_KEY'),
+    api_secret = os.environ.get('CLOUDINARY_API_SECRET')
+)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
