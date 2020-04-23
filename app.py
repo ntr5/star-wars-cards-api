@@ -15,17 +15,15 @@ env.read_env()
 CORS(app)
 DATABASE_URL = env('DATABASE_URL')
 
-# Cloud.config.update = ({
-#     # 'cloud_name':os.environ.get('CLOUDINARY_CLOUD_NAME'),
-#     'cloud_name':"dtksvhogu",
-#     'api_key': os.environ.get('CLOUDINARY_API_KEY'),
-#     'api_secret': os.environ.get('CLOUDINARY_API_SECRET'), 
-#     secure: true
-# })
+Cloud.config.update = ({
+    'cloud_name':os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'api_key': os.environ.get('CLOUDINARY_API_KEY'),
+    'api_secret': os.environ.get('CLOUDINARY_API_SECRET')
+    # 'secure': true
+})
 
 Cloud.config(
     cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    # cloud_name = "dtksvhogu",
     api_key = os.environ.get('CLOUDINARY_API_KEY'),
     api_secret = os.environ.get('CLOUDINARY_API_SECRET')
 )
@@ -52,7 +50,6 @@ class Card(db.Model):
     # username = db.Column(db.String(100), nullable=True)
     # seller_id = db.Column(db.Integer)
 
-    # def __init__(self, name, quantity, price, offer, image_url, seller_id):
     # def __init__(self, name, quantity, price, offer, description, image_url, username):
     def __init__(self, name, quantity, price, description, image_url, public_id):
         self.name = name
@@ -61,15 +58,11 @@ class Card(db.Model):
         self.description = description
         self.image_url = image_url
         self.public_id = public_id
-        # self.offer = offer
-        # self.seller_id = seller_id
         # self.username = username
 
 
 class CardSchema(ma.Schema):
     class Meta:
-        # fields = ("id", "name", "quantity", "price", "offer", "image_url", "seller_id")
-        # fields = ("id", "name", "quantity", "price", "offer", "description", "image_url", "username")
         # fields = ("id", "name", "quantity", "price", "description", "image_url", "username")
         fields = ("id", "name", "quantity", "price", "description", "image_url", "public_id")
 
@@ -92,13 +85,8 @@ def add_card():
     description = request.json["description"]
     image_url = request.json["image_url"]
     public_id = request.json["public_id"]
-    # offer = request.json["offer"]
     # username = request.json["username"]
-    # user_id = request.json["user_id"]
 
-    # new_card = Card(name, quantity, price, offer, image_url, user_id)
-    # new_card = Card(name, quantity, price, offer, description, image_url, username)
-    # new_card = Card(name, quantity, price, description, image_url, username)
     new_card = Card(name, quantity, price, description, image_url, public_id)
 
     db.session.add(new_card)
@@ -135,9 +123,6 @@ def update_card(id):
     description = request.json['description']
     image_url = request.json['image_url']
     public_id = request.json['public_id']
-    # offer = request.json['offer']
-    # username = request.json['username']
-    # user_id = request.json['user_id']
 
     card.name = name
     card.quantity = quantity
@@ -145,10 +130,12 @@ def update_card(id):
     card.description = description
     card.image_url = image_url
     card.public_id = public_id
-    # card.offer = offer
-    # card.username = username
 
     db.session.commit()
+    # Cloud.api.update(card.public_id)
+    Cloud.api.update(card.public_id,
+        tags = "important")
+
     return card_schema.jsonify(card)
 
 
